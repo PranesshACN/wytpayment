@@ -9,7 +9,7 @@ export const WHITEPASS_REDIRECT_URI =
 export const WHITEPASS_AUTH_URL =
   import.meta.env.VITE_WHITEPASS_AUTH_URL || 'https://test.wytnet.com/oauth/authorize'
 export const WHITEPASS_TOKEN_URL =
-  import.meta.env.VITE_WHITEPASS_TOKEN_URL || 'https://test.api.wytnet.com/oauth/token'
+  import.meta.env.VITE_WHITEPASS_TOKEN_URL || 'https://test.api.wytnet.com//oauth/token'
 
 /**
  * Initiates WhitePass SSO Authorization Code Flow with PKCE
@@ -75,23 +75,11 @@ export async function handleWhitePassCallback(code: string): Promise<WhitePassTo
   const verifier = localStorage.getItem('pkce_verifier') || ''
 
   // Attempt POST to WhitePass token endpoint
-  let response = await fetch(WHITEPASS_TOKEN_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      grant_type: 'authorization_code',
-      code: code,
-      client_id: WHITEPASS_CLIENT_ID,
-      client_secret: WHITEPASS_CLIENT_SECRET,
-      code_verifier: verifier,
-      redirect_uri: WHITEPASS_REDIRECT_URI,
-    }),
-  })
+  let response: Response | null = null
+  let firstFetchFailed = false
 
-  // Fallback check if token URL path needs trailing/double slashes as specified in guide
-  if (!response.ok && WHITEPASS_TOKEN_URL.endsWith('/oauth/token')) {
-    const doubleSlashUrl = WHITEPASS_TOKEN_URL.replace('/oauth/token', '//oauth/token')
-    const retryResp = await fetch(doubleSlashUrl, {
+  try {
+    response = await fetch(WHITEPASS_TOKEN_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
@@ -103,9 +91,45 @@ export async function handleWhitePassCallback(code: string): Promise<WhitePassTo
         redirect_uri: WHITEPASS_REDIRECT_URI,
       }),
     })
-    if (retryResp.ok) {
-      response = retryResp
+  } catch (e) {
+    firstFetchFailed = true
+    console.warn('Initial token exchange fetch failed:', e)
+  }
+
+  // Fallback check if token URL path needs trailing/double slashes as specified in guide
+  if ((firstFetchFailed || (response && !response.ok)) && WHITEPASS_TOKEN_URL.includes('/oauth/token')) {
+    // Avoid double-slashing if it's already double-slashed
+    const cleanTokenUrl = WHITEPASS_TOKEN_URL.replace('//oauth/token', '/oauth/token')
+    const doubleSlashUrl = cleanTokenUrl.replace('/oauth/token', '//oauth/token')
+    
+    try {
+      const retryResp = await fetch(doubleSlashUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          grant_type: 'authorization_code',
+          code: code,
+          client_id: WHITEPASS_CLIENT_ID,
+          client_secret: WHITEPASS_CLIENT_SECRET,
+          code_verifier: verifier,
+          redirect_uri: WHITEPASS_REDIRECT_URI,
+        }),
+      })
+      if (retryResp.ok) {
+        response = retryResp
+        firstFetchFailed = false
+      } else if (firstFetchFailed) {
+        throw new Error(`Failed to exchange authorization code: ${retryResp.status} ${await retryResp.text()}`)
+      }
+    } catch (retryErr: any) {
+      if (firstFetchFailed) {
+        throw new Error(`OAuth server unreachable: ${retryErr.message || 'Failed to fetch'}`)
+      }
     }
+  }
+
+  if (firstFetchFailed || !response) {
+    throw new Error('Failed to connect to WhitePass OAuth server (Network Error / CORS Blocked).')
   }
 
   if (!response.ok) {
