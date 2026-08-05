@@ -53,7 +53,7 @@ export const Register: React.FC = () => {
           className="w-full py-3.5 bg-slate-700 hover:bg-slate-650 border border-slate-600 text-white font-bold rounded-xl shadow-md hover:border-slate-500 transition-all flex items-center justify-center gap-3"
         >
           <Shield className="h-5 w-5 text-emerald-400" />
-          <span>Sign up with WhitePass SSO</span>
+          <span>Sign up with WytPass SSO</span>
         </button>
 
         <div className="relative flex items-center justify-center my-1">

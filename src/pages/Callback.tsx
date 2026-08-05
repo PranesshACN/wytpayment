@@ -49,7 +49,7 @@ export const Callback: React.FC = () => {
               <RefreshCw className="h-8 w-8 animate-spin" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white mb-1">Authenticating with WhitePass</h2>
+              <h2 className="text-xl font-bold text-white mb-1">Authenticating with WytePass</h2>
               <p className="text-sm text-slate-400">
                 Exchanging authorization code for secure access tokens...
               </p>
