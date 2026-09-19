@@ -12,11 +12,29 @@ import { PaymentSuccess } from './pages/PaymentSuccess'
 import { PaymentFailed } from './pages/PaymentFailed'
 import { Profile } from './pages/Profile'
 import { SettingsPage } from './pages/Settings'
+import { Landing } from './pages/Landing'
+
+function HomeRoute() {
+  const token = localStorage.getItem('saas_token')
+  if (!token) {
+    return <Landing />
+  }
+  return (
+    <ProtectedRoute>
+      <Layout>
+        <Dashboard />
+      </Layout>
+    </ProtectedRoute>
+  )
+}
 
 function App() {
   return (
     <Router>
       <Routes>
+        {/* Landing Page */}
+        <Route path="/landing" element={<Landing />} />
+
         {/* Public auth pages */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -30,17 +48,8 @@ function App() {
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/payment-failed" element={<PaymentFailed />} />
 
-        {/* Protected SaaS application console routes */}
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <Dashboard />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
+        {/* Root Route (Landing for guests, Dashboard for logged-in users) */}
+        <Route path="/" element={<HomeRoute />} />
         <Route
           path="/pricing"
           element={
