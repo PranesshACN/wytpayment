@@ -226,14 +226,6 @@ export const Landing: React.FC = () => {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b12_1px,transparent_1px),linear-gradient(to_bottom,#1e293b12_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
       </div>
 
-      {/* ---------------- TOP SCROLL PROGRESS BAR ---------------- */}
-      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-slate-900">
-        <div 
-          className="h-full bg-gradient-to-r from-indigo-500 via-cyan-400 to-violet-500 transition-all duration-75 shadow-[0_0_12px_rgba(99,102,241,0.8)]"
-          style={{ width: `${scrollProgress}%` }}
-        />
-      </div>
-
       {/* ---------------- NAVBAR ---------------- */}
       <header className="sticky top-0 z-40 backdrop-blur-xl bg-slate-950/75 border-b border-slate-800/60 transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
