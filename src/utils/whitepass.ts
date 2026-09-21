@@ -5,7 +5,7 @@ export const WHITEPASS_CLIENT_ID =
 export const WHITEPASS_REDIRECT_URI =
   import.meta.env.VITE_WHITEPASS_REDIRECT_URI || 'https://wytpayment.vercel.app/callback'
 export const WHITEPASS_AUTH_URL =
-  import.meta.env.VITE_WHITEPASS_AUTH_URL || 'https://wytnet.com/oauth/authorize'
+  import.meta.env.VITE_WHITEPASS_AUTH_URL || 'https://test.wytnet.com/oauth/authorize'
 
 
 /**
