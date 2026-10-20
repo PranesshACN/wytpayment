@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { LayoutDashboard, CreditCard, History, User, Settings, LogOut, Wallet } from 'lucide-react'
+import { api } from '../api/base'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -12,10 +13,16 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const userJson = localStorage.getItem('saas_user')
   const user = userJson ? JSON.parse(userJson) : { name: 'User', email: '' }
 
-  const handleLogout = () => {
-    localStorage.removeItem('saas_token')
-    localStorage.removeItem('saas_user')
-    navigate('/login')
+  const handleLogout = async () => {
+    try {
+      await api.post('/api/auth/logout')
+    } catch (err) {
+      console.warn('Backend logout error:', err)
+    } finally {
+      localStorage.removeItem('saas_token')
+      localStorage.removeItem('saas_user')
+      navigate('/login')
+    }
   }
 
   const menuItems = [
