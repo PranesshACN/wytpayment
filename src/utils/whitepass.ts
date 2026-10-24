@@ -3,7 +3,7 @@ import { api } from '../api/base'
 export const WYTPASS_CLIENT_ID =
   import.meta.env.VITE_WYTPASS_CLIENT_ID ||
   import.meta.env.VITE_WHITEPASS_CLIENT_ID ||
-  'wn_live_860820ebf3f7a303c101540e2ac80345'
+  'wn_live_c7f8ce9b13ee5a8f7a3d9222fce39fd0'
 
 export const WYTPASS_REDIRECT_URI =
   import.meta.env.VITE_WYTPASS_REDIRECT_URI ||
