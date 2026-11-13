@@ -44,7 +44,7 @@ export const PaymentSuccess: React.FC = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 p-4">
         <Loader2 className="h-10 w-10 text-indigo-600 animate-spin" />
-        <span className="text-sm font-semibold text-slate-600 mt-3">Confirming payment with WhiteNet...</span>
+        <span className="text-sm font-semibold text-slate-600 mt-3">Confirming payment with WytNet...</span>
       </div>
     )
   }
